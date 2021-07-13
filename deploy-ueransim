@@ -1,0 +1,28 @@
+#!/bin/bash
+set -e
+
+HERE=$(dirname "$(readlink --canonicalize "$BASH_SOURCE")")
+
+VERSION=3.2.2
+
+kubectl delete configmap --selector=app.kubernetes.io/part-of=ueransim --ignore-not-found=true
+kubectl delete deployments --selector=app.kubernetes.io/part-of=ueransim--ignore-not-found=true
+kubectl delete services --selector=app.kubernetes.io/part-of=ueransim --ignore-not-found=true
+kubectl wait pods --selector=app.kubernetes.io/part-of=ueransim --for=delete || true
+#kubectl wait services --selector=app.kubernetes.io/part-of=ueransim --for=delete || true
+
+
+function d() {
+    VERSION=$VERSION \
+    COMPONENT=$1 \
+    IMAGE="localhost:5000/ueransim:3.2.2" \
+    envsubst < "$HERE/manifests/component.yaml" |
+    kubectl apply -f -
+}
+
+kubectl create -f "$HERE/manifests/gnb-configmap.yaml"
+#kubectl create -f "$HERE/manifests/sgwu-configmap.yaml"
+
+d gnb
+#d ue
+
