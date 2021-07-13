@@ -8,8 +8,8 @@ metadata:
     app.kubernetes.io/instance: $COMPONENT
     app.kubernetes.io/version: $VERSION
     app.kubernetes.io/component: 5g
-    app.kubernetes.io/part-of: open5gs
-    app.kubernetes.io/managed-by: open5gs
+    app.kubernetes.io/part-of: ueransim
+    app.kubernetes.io/managed-by: ueransim
 
 spec:
   replicas: 1
@@ -26,24 +26,19 @@ spec:
         app.kubernetes.io/instance: $COMPONENT
         app.kubernetes.io/version: $VERSION
         app.kubernetes.io/component: 5g
-        app.kubernetes.io/part-of: open5gs
-        app.kubernetes.io/managed-by: open5gs
+        app.kubernetes.io/part-of: ueransim
+        app.kubernetes.io/managed-by: ueransim
     spec:
       hostname: ${COMPONENT}-1
-      subdomain: open5gs
+      subdomain: ueransim
       containers:
       - name: main 
         image: $IMAGE
         imagePullPolicy: Always
         volumeMounts: 
           - name: ${COMPONENT}-cfg 
-            mountPath: /etc/open5gs/${COMPONENT}.yaml
+            mountPath: /UERANSIM/cfg/${COMPONENT}.yaml
             subPath: ${COMPONENT}.yaml
-          - name: ${COMPONENT}-cfg
-            mountPath: /etc/freeDiameter/${COMPONENT}.conf
-            subPath: ${COMPONENT}.conf
-          - name: tls
-            mountPath: /etc/tls
         env:
           - name: COMPONENT
             value: $COMPONENT
@@ -57,7 +52,3 @@ spec:
       - name: ${COMPONENT}-cfg
         configMap:
           name: $COMPONENT
-      - name: tls
-        secret: 
-          secretName: $COMPONENT
-          optional: true
