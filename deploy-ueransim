@@ -6,8 +6,8 @@ HERE=$(dirname "$(readlink --canonicalize "$BASH_SOURCE")")
 VERSION=3.2.2
 
 kubectl delete configmap --selector=app.kubernetes.io/part-of=ueransim --ignore-not-found=true
-kubectl delete deployments --selector=app.kubernetes.io/part-of=ueransim--ignore-not-found=true
-kubectl delete services --selector=app.kubernetes.io/part-of=ueransim --ignore-not-found=true
+kubectl delete deployments --selector=app.kubernetes.io/part-of=ueransim --ignore-not-found=true
+#kubectl delete services --selector=app.kubernetes.io/part-of=ueransim --ignore-not-found=true
 kubectl wait pods --selector=app.kubernetes.io/part-of=ueransim --for=delete || true
 #kubectl wait services --selector=app.kubernetes.io/part-of=ueransim --for=delete || true
 
@@ -15,14 +15,18 @@ kubectl wait pods --selector=app.kubernetes.io/part-of=ueransim --for=delete || 
 function d() {
     VERSION=$VERSION \
     COMPONENT=$1 \
-    IMAGE="localhost:5000/ueransim:3.2.2" \
+    AMFIP=$2 \
+    IMAGE="localhost:5000/ueransim:$VERSION" \
     envsubst < "$HERE/manifests/component.yaml" |
     kubectl apply -f -
 }
 
-kubectl create -f "$HERE/manifests/gnb-configmap.yaml"
-#kubectl create -f "$HERE/manifests/sgwu-configmap.yaml"
+AMFIP=$(kubectl get svc amf -o jsonpath='{.spec.clusterIP}')
+VERSION=$VERSION \
+AMFIP=$AMFIP \
+envsubst < "$HERE/manifests/gnb-configmap.yaml" |
+kubectl create -f -
 
-d gnb
+d gnb $AMFIP
 #d ue
 

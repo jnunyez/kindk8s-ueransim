@@ -33,15 +33,22 @@ spec:
       subdomain: ueransim
       containers:
       - name: main 
+        command:
+          - tail
+        args:
+          - -f
+          - /dev/null
         image: $IMAGE
         imagePullPolicy: Always
         volumeMounts: 
           - name: ${COMPONENT}-cfg 
-            mountPath: /UERANSIM/cfg/${COMPONENT}.yaml
+            mountPath: /UERANSIM/config/${COMPONENT}.yaml
             subPath: ${COMPONENT}.yaml
         env:
           - name: COMPONENT
             value: $COMPONENT
+          - name: AMFIP
+            value: $AMFIP
         securityContext:
           capabilities:
             add:
