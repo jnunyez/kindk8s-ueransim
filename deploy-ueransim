@@ -21,7 +21,8 @@ function d() {
     kubectl apply -f -
 }
 
-AMFIP=$(kubectl get svc amf -o jsonpath='{.spec.clusterIP}')
+#AMFIP=$(kubectl get svc amf -o jsonpath='{.spec.clusterIP}')
+AMFIP=$(kubectl get pods -l app.kubernetes.io/name=amf -o jsonpath="{.items[*].status.podIP}")
 VERSION=$VERSION \
 AMFIP=$AMFIP \
 envsubst < "$HERE/manifests/gnb-configmap.yaml" |
