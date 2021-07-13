@@ -33,11 +33,6 @@ spec:
       subdomain: ueransim
       containers:
       - name: main 
-        command:
-          - tail
-        args:
-          - -f
-          - /dev/null
         image: $IMAGE
         imagePullPolicy: Always
         volumeMounts: 
