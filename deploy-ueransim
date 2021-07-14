@@ -21,13 +21,19 @@ function d() {
     kubectl apply -f -
 }
 
-#AMFIP=$(kubectl get svc amf -o jsonpath='{.spec.clusterIP}')
-AMFIP=$(kubectl get pods -l app.kubernetes.io/name=amf -o jsonpath="{.items[*].status.podIP}")
+AMFIP=$(kubectl get pods -l app.kubernetes.io/name=amf -o jsonpath="{.items[*].status.podIP}") \
 VERSION=$VERSION \
 AMFIP=$AMFIP \
 envsubst < "$HERE/manifests/gnb-configmap.yaml" |
 kubectl create -f -
 
 d gnb $AMFIP
-#d ue
+
+kubectl wait pods --selector=app.kubernetes.io/part-of=ueransim --for=condition=Ready
+NR_GNB_IP=$(kubectl get pods -l app.kubernetes.io/name=gnb -o jsonpath="{.items[*].status.podIP}") \
+VERSION=$VERSION \
+envsubst < "$HERE/manifests/ue-configmap.yaml" |
+kubectl create -f -
+
+d ue
 
