@@ -9,7 +9,7 @@ This repo leverages [ueransim](https://github.com/aligungr/UERANSIM) to deploy 5
 ## Quickstart
 
 
-Deploy a 5G gnb Antenna: 
+Deploy a 5G gnb Antenna and a 5G UE on k8s: 
 
    ```
    deploy-ueransim

@@ -15,16 +15,15 @@ kubectl wait pods --selector=app.kubernetes.io/part-of=ueransim --for=delete || 
 function d() {
     VERSION=$VERSION \
     COMPONENT=$1 \
-    AMFIP=$2 \
+    AMF_IP=$2 \
     IMAGE="localhost:5000/ueransim:$VERSION" \
     envsubst < "$HERE/manifests/component.yaml" |
     kubectl apply -f -
 }
 
-AMFIP=$(kubectl get pods -l app.kubernetes.io/name=amf -o jsonpath="{.items[*].status.podIP}") \
+AMF_IP=$(kubectl get pods -l app.kubernetes.io/name=amf -o jsonpath="{.items[*].status.podIP}") \
 VERSION=$VERSION \
-AMFIP=$AMFIP \
-envsubst < "$HERE/manifests/gnb-configmap.yaml" |
+envsubst '$AMF_IP,$VERSION'< "$HERE/manifests/gnb-configmap.yaml" |
 kubectl create -f -
 
 d gnb $AMFIP
