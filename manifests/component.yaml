@@ -42,8 +42,6 @@ spec:
         env:
           - name: COMPONENT
             value: $COMPONENT
-          - name: AMFIP
-            value: $AMFIP
         securityContext:
           capabilities:
             add:
