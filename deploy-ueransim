@@ -16,7 +16,7 @@ function d() {
     VERSION=$VERSION \
     COMPONENT=$1 \
     AMF_IP=$2 \
-    IMAGE="localhost:5000/ueransim:$VERSION" \
+    IMAGE="quay.io/jnunez/ueransim:$VERSION" \
     envsubst < "$HERE/manifests/component.yaml" |
     kubectl apply -f -
 }
