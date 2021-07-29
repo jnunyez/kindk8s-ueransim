@@ -63,6 +63,18 @@ UERANSIM v3.2.2
 [2021-07-23 16:24:04.392] [app] [info] Connection setup for PDU session[1] is successful, TUN interface[uesimtun0, 45.45.0.2] is up.
 ```
 
+8. Test connectivity
+
+```
+ping -I uesimtun0 8.8.8.8
+PING 8.8.8.8 (8.8.8.8) from 45.45.0.2 uesimtun0: 56(84) bytes of data.
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=116 time=13.6 ms
+64 bytes from 8.8.8.8: icmp_seq=2 ttl=116 time=13.3 ms
+```
+
+![Wireshark](./images/wireshark.png?raw=true)
+
+
 ## ToDo
 
 - Generalize `deploy-ueransim` to deploy UEs and gNodeB at scale
