@@ -1,0 +1,83 @@
+#!/bin/bash
+set -e
+
+HERE=$(dirname "$(readlink --canonicalize "$BASH_SOURCE")")
+
+VERSION=3.2.2
+
+kubectl delete configmap --selector=app.kubernetes.io/part-of=ueransim --ignore-not-found=true
+kubectl delete deployments --selector=app.kubernetes.io/part-of=ueransim --ignore-not-found=true
+#kubectl delete services --selector=app.kubernetes.io/part-of=ueransim --ignore-not-found=true
+kubectl wait pods --selector=app.kubernetes.io/part-of=ueransim --for=delete || true
+#kubectl wait services --selector=app.kubernetes.io/part-of=ueransim --for=delete || true
+
+
+
+function d() {
+    VERSION=$VERSION \
+    COMPONENT=$1 \
+    AMF_IP=$2 \
+    IMAGE="quay.io/jnunez/ueransim:$VERSION" \
+    envsubst < "$HERE/manifests/component.yaml" |
+    kubectl apply -f -
+}
+
+function is_5gpod_ready() {
+  [[ "$(kubectl get pod "$1" -o 'jsonpath={.status.conditions[?(@.type=="Ready")].status}')" == 'True' ]]
+}
+
+function 5gpods_ready() {
+    local POD
+
+    [[ "$#" == 0 ]] && return 0
+
+    for POD in $PODS; do
+      is_5gpod_ready "$POD" || return 1
+    done
+
+    return 0 
+}
+
+function 5gcr() {
+   local PERIOD INTERVAL
+
+   PERIOD="$1"
+   INTERVAL="$2"
+
+   for ((i=0; i<$PERIOD; i+=$INTERVAL)); do
+    PODS="$(kubectl get po -o 'jsonpath={.items[*].metadata.name}')"
+    if 5gpods_ready $PODS; then
+      return 0
+    fi
+
+    echo "Waiting for 5g-c pods in the current namespace to be ready..."
+    sleep "$INTERVAL"
+  done
+  echo "Waited $PERIOD seconds, but 5gc is not ready"
+  return 1 
+}
+
+# check 5g-c deployment is ready during 12 seconds and check every three seconds
+5gcr 12 3
+
+# deploy 5G gNB
+AMF_IP=$(kubectl get pods -l app.kubernetes.io/name=amf -o jsonpath="{.items[*].status.podIP}") \
+VERSION=$VERSION \
+AMF_IP="${AMF_IP:-127.0.0.1}" \
+envsubst '$AMF_IP,$VERSION'< "$HERE/manifests/gnb-configmap.yaml" |
+kubectl create -f -
+
+
+d gnb $AMFIP
+
+
+# deploy 5G UE
+kubectl wait pods --selector=app.kubernetes.io/part-of=ueransim --for=condition=Ready
+NR_GNB_IP=$(kubectl get pods -l app.kubernetes.io/name=gnb -o jsonpath="{.items[*].status.podIP}") \
+NR_GNB_IP="${NR_GNB_IP:-127.0.0.1}" \
+VERSION=$VERSION \
+envsubst < "$HERE/manifests/ue-configmap.yaml" |
+kubectl create -f -
+
+d ue
+
