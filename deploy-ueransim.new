@@ -1,0 +1,40 @@
+#!/bin/bash
+set -e
+
+HERE=$(dirname "$(readlink --canonicalize "$BASH_SOURCE")")
+
+VERSION=3.2.2
+
+kubectl delete configmap --selector=app.kubernetes.io/part-of=ueransim --ignore-not-found=true
+kubectl delete deployments --selector=app.kubernetes.io/part-of=ueransim --ignore-not-found=true
+#kubectl delete services --selector=app.kubernetes.io/part-of=ueransim --ignore-not-found=true
+kubectl wait pods --selector=app.kubernetes.io/part-of=ueransim --for=delete || true
+#kubectl wait services --selector=app.kubernetes.io/part-of=ueransim --for=delete || true
+
+
+function d() {
+    VERSION=$VERSION \
+    COMPONENT=$1 \
+    AMF_IP=$2 \
+    IMAGE="quay.io/jnunez/ueransim:$VERSION" \
+    envsubst < "$HERE/manifests/component.yaml" |
+    kubectl apply -f -
+}
+
+AMF_IP=$(kubectl get pods -l app.kubernetes.io/name=amf -o jsonpath="{.items[*].status.podIP}") \
+VERSION=$VERSION \
+AMF_IP="${AMF_IP:-127.0.0.1}" \
+envsubst '$AMF_IP,$VERSION'< "$HERE/manifests/gnb-configmap.yaml" |
+kubectl create -f -
+
+d gnb $AMFIP
+
+kubectl wait pods --selector=app.kubernetes.io/part-of=ueransim --for=condition=Ready
+NR_GNB_IP=$(kubectl get pods -l app.kubernetes.io/name=gnb -o jsonpath="{.items[*].status.podIP}") \
+NR_GNB_IP="${NR_GNB_IP:-127.0.0.1}" \
+VERSION=$VERSION \
+envsubst < "$HERE/manifests/ue-configmap.yaml" |
+kubectl create -f -
+
+d ue
+
