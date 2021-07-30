@@ -9,14 +9,24 @@ This repo leverages [ueransim](https://github.com/aligungr/UERANSIM) to deploy a
 ## Quickstart
 
 1. Generate open5gs and webui base image, as detailed [here](http://github.com/jnunyez/build-open5gs).
+	
+	- Images are also publicly available, download them from:
+
+		```console
+    	podman pull quay.io/jnunez/open5gs
+    	podman pull quay.io/jnunez/webui
+		```
 
 2. Build the UERANSIM image. The repo to build this image is available in [here](https://github.com/build-ueransim). 
+	- Image is available now, download it from:
+
+		```console
+    	podman pull quay.io/jnunez/ueransim
+		```
 
 3. Deploy open5gs and prerequisites in k8s. The manifests and detailed instructions for deploying open5gs in k8s are available [here](https://github.com/jnunyez/kindk8s-open5gs). Assure that all open5gs pods are running properly.
 
-4. Build the UERANSIM image. The repo to build this image is available in [here](https://github.com/build-ueransim).
-
-5. Assure the 5G-Core has registered the subscriber profiles planned to be subsequently used with the 5G-NR simulator. 
+4. Assure the 5G-Core has registered the subscriber profiles planned to be subsequently used with the 5G-NR simulator. 
 	
 	- SIM provisioning can be done manually by opening the webui dashboard. The `webui` service is externally accessible using a NodePort to the default port in the app (i.e., port 3000). See screenshot of webui dashboard below:
 
@@ -24,7 +34,7 @@ This repo leverages [ueransim](https://github.com/aligungr/UERANSIM) to deploy a
 
 	- Automated SIM provisioning (**TBA**)
 
-6. Deploy a 5G gNB that attaches to the AMF and subsequently a 5G UE that will attach to the gNB. 
+5. Deploy a 5G gNB that attaches to the AMF and subsequently a 5G UE that will attach to the gNB. 
 
 	- The UE must be already subscribed in the UDM as detailed in step 5.
  
@@ -34,7 +44,7 @@ This repo leverages [ueransim](https://github.com/aligungr/UERANSIM) to deploy a
    		deploy-ueransim
    		```
 
-7. Check that the UE is subscribed and gets IP info by checking the logs of the UE or gNB pod e.g., `kubectl logs -f ue-pod-identifier`. The output of this command should confirm the succesful registration of the UE.
+6. Check that the UE is subscribed and gets IP info by checking the logs of the UE or gNB pod e.g., `kubectl logs -f ue-pod-identifier`. The output of this command should confirm the succesful registration of the UE.
 
 	```console
 	UERANSIM v3.2.2
@@ -69,7 +79,7 @@ This repo leverages [ueransim](https://github.com/aligungr/UERANSIM) to deploy a
 	[2021-07-23 16:24:04.392] [app] [info] Connection setup for PDU session[1] is successful, TUN interface[uesimtun0, 45.45.0.2] is up.
 	```
 
-8. Test 5G UE uplink and downlink connectivity through ue interface.
+7. Test 5G UE uplink and downlink connectivity through ue interface.
 
 	```console
 	ping -I uesimtun0 8.8.8.8
