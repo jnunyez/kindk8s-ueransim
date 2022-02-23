@@ -3,7 +3,7 @@ set -e
 
 HERE=$( cd "$(dirname "$0")" ; pwd -P )
 
-VERSION=3.2.2
+VERSION=3.2.6
 
 oc project "open5gs-core"
 
@@ -34,7 +34,7 @@ function 5gpods_ready() {
       is_5gpod_ready "$POD" || return 1
     done
 
-    return 0 
+    return 0
 }
 
 function 5gcr() {
@@ -53,7 +53,7 @@ function 5gcr() {
     sleep "$INTERVAL"
   done
   echo "Waited $PERIOD seconds, but 5gc is not ready"
-  return 1 
+  return 1
 }
 
 # check 5g-c deployment is ready during 12 seconds and check every three seconds
