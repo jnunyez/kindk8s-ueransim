@@ -73,7 +73,6 @@ data:
       downlink: 'full'
 kind: ConfigMap
 metadata:
-  creationTimestamp: "2021-07-14T09:30:18Z"
   name: ue
   labels:
     app.kubernetes.io/name: ue
@@ -82,16 +81,3 @@ metadata:
     app.kubernetes.io/component: 5g
     app.kubernetes.io/part-of: ueransim
     app.kubernetes.io/managed-by: ueransim
-  managedFields:
-  - apiVersion: v1
-    fieldsType: FieldsV1
-    fieldsV1:
-      f:data:
-        .: {}
-        f:ue.yaml: {}
-    manager: kubectl-create
-    operation: Update
-    time: "2021-07-14T09:30:18Z"
-  name: ue
-  resourceVersion: "511032"
-  uid: 2e4e01fb-37fe-456b-be7f-2c241d4e7f18

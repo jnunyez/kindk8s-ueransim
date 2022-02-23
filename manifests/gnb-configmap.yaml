@@ -25,7 +25,6 @@ data:
     ignoreStreamIds: true
 kind: ConfigMap
 metadata:
-  creationTimestamp: "2021-07-13T11:36:58Z"
   name: gnb
   labels:
     app.kubernetes.io/name: gnb
@@ -34,15 +33,3 @@ metadata:
     app.kubernetes.io/component: 5g
     app.kubernetes.io/part-of: ueransim
     app.kubernetes.io/managed-by: ueransim
-  managedFields:
-  - apiVersion: v1
-    fieldsType: FieldsV1
-    fieldsV1:
-      f:data:
-        .: {}
-        f:gnb.yaml: {}
-    manager: kubectl-create
-    operation: Update
-    time: "2021-07-13T11:36:58Z"
-  resourceVersion: "259014"
-  uid: 01cf8e44-3369-46f7-bc03-b1d4f052a20f
