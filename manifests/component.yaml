@@ -31,6 +31,17 @@ spec:
     spec:
       hostname: ${COMPONENT}-1
       subdomain: ueransim
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: feature.node.kubernetes.io/open5gs
+                operator: In
+                values:
+                  - "true"
+      serviceAccountName: open5gs
+      serviceAccount: open5gs
       containers:
       - name: main 
         image: $IMAGE

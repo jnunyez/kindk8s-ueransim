@@ -93,6 +93,5 @@ metadata:
     operation: Update
     time: "2021-07-14T09:30:18Z"
   name: ue
-  namespace: default
   resourceVersion: "511032"
   uid: 2e4e01fb-37fe-456b-be7f-2c241d4e7f18

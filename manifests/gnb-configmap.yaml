@@ -44,6 +44,5 @@ metadata:
     manager: kubectl-create
     operation: Update
     time: "2021-07-13T11:36:58Z"
-  namespace: default
   resourceVersion: "259014"
   uid: 01cf8e44-3369-46f7-bc03-b1d4f052a20f
