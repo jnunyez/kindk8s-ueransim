@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test
+  annotations:
+    k8s.v1.cni.cncf.io/networks: n2gnb
+    openshift.io/scc: privileged
+  labels:
+    app.kubernetes.io/component: 5g
+    app.kubernetes.io/instance: upf
+    app.kubernetes.io/managed-by: open5gs
+    app.kubernetes.io/name: upf
+    app.kubernetes.io/part-of: open5gs
+    app.kubernetes.io/version: 2.3.2
+  namespace: open5gs-core
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: feature.node.kubernetes.io/open5gs
+            operator: In
+            values:
+            - "true"
+  containers:
+  - name: main
+    image: quay.io/jnunez/open5gs:2.3.2
+    imagePullPolicy: IfNotPresent
+    command: [ "/bin/bash", "-c", "--" ]
+    args: [ "while true; do sleep 300000; done;" ]
+    resources:
+      requests:
+        openshift.io/core_sriov_netdevice: '1'
+      limits:
+        openshift.io/core_sriov_netdevice: '1'
+    securityContext:
+      capabilities:
+        add:
+        - NET_RAW
+        - NET_ADMIN
+      privileged: true
+  hostname: test
+  restartPolicy: Always
+  serviceAccount: open5gs
+  serviceAccountName: open5gs
+  subdomain: open5gs
+
