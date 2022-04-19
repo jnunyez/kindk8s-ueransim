@@ -2,10 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: $COMPONENT
+  name: ue
   labels:
-    app.kubernetes.io/name: $COMPONENT
-    app.kubernetes.io/instance: $COMPONENT
+    app.kubernetes.io/name: ue
+    app.kubernetes.io/instance: ue
     app.kubernetes.io/version: $VERSION
     app.kubernetes.io/component: 5g
     app.kubernetes.io/part-of: ueransim
@@ -15,23 +15,21 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: $COMPONENT
-      app.kubernetes.io/instance: $COMPONENT
+      app.kubernetes.io/name: ue
+      app.kubernetes.io/instance: ue
       app.kubernetes.io/version: $VERSION
       app.kubernetes.io/component: 5g
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: $COMPONENT
-        app.kubernetes.io/instance: $COMPONENT
+        app.kubernetes.io/name: ue
+        app.kubernetes.io/instance: ue
         app.kubernetes.io/version: $VERSION
         app.kubernetes.io/component: 5g
         app.kubernetes.io/part-of: ueransim
         app.kubernetes.io/managed-by: ueransim
-      annotations:
-        k8s.v1.cni.cncf.io/networks: ${NET1},${NET2}
     spec:
-      hostname: ${COMPONENT}-1
+      hostname: ue-1
       subdomain: ueransim
       affinity:
         nodeAffinity:
@@ -48,18 +46,13 @@ spec:
       - name: main
         image: $IMAGE
         imagePullPolicy: Always
-        resources:
-          requests:
-            openshift.io/core_sriov_netdevice: $NICS
-          limits:
-            openshift.io/core_sriov_netdevice: $NICS
         volumeMounts:
-          - name: ${COMPONENT}-cfg
-            mountPath: /UERANSIM/config/${COMPONENT}.yaml
-            subPath: ${COMPONENT}.yaml
+          - name: ue-cfg
+            mountPath: /UERANSIM/config/ue.yaml
+            subPath: ue.yaml
         env:
           - name: COMPONENT
-            value: $COMPONENT
+            value: "ue"
         securityContext:
           capabilities:
             add:
@@ -67,6 +60,6 @@ spec:
             - "NET_ADMIN" # enabled access to "/dev/net/tun" (not enough)
           privileged: true # HACK to enable "/dev/net/tun"
       volumes:
-      - name: ${COMPONENT}-cfg
+      - name: ue-cfg
         configMap:
-          name: $COMPONENT
+          name: ue

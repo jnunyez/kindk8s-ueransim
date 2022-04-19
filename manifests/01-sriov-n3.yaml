@@ -1,0 +1,24 @@
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetwork
+metadata:
+  name: n3gnb
+  namespace: openshift-sriov-network-operator
+spec:
+  resourceName: core_sriov_netdevice
+  networkNamespace: open5gs-core
+  vlan: 904
+  ipam: |-
+    {
+      "type": "static",
+      "addresses": [
+        {
+          "address": "10.28.4.9/24",
+          "gateway": "10.28.4.1"
+        },
+        {
+          "address": "fd00:6:6:904::9/64",
+          "gateway": "fd00:6:6:904::1"
+        }
+      ]
+    }
+  linkState: auto
