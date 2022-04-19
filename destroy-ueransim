@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+
+HERE=$( cd "$(dirname "$0")" ; pwd -P )
+
+VERSION=3.2.6
+
+oc project "open5gs-core"
+
+oc delete configmap --selector=app.kubernetes.io/part-of=ueransim --ignore-not-found=true
+oc delete deployments --selector=app.kubernetes.io/part-of=ueransim --ignore-not-found=true
+oc wait pods --selector=app.kubernetes.io/part-of=ueransim --for=delete || true
