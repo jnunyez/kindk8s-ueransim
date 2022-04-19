@@ -17,7 +17,7 @@ This repo leverages [ueransim](https://github.com/aligungr/UERANSIM) to deploy a
     	podman pull quay.io/jnunez/webui
 		```
 
-2. Build the UERANSIM image. The repo to build this image is available in [here](https://github.com/build-ueransim). 
+2. Build the UERANSIM image. The repo to build this image is available in [here](https://github.com/jnunyez/build-ueransim). 
 	- Image is available now, download it from:
 
 		```console
@@ -38,6 +38,12 @@ This repo leverages [ueransim](https://github.com/aligungr/UERANSIM) to deploy a
 
 	- The UE must be already subscribed in the UDM as detailed in step 5.
  
+	- Create the sriov interfaces attachments for n2 and n3 ifaces
+
+		```console
+		kustomize assets/sriov | oc apply -f -
+		```
+
 	- Run the ueransim deployment:
 
    		```console
