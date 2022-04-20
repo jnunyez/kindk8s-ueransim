@@ -1,14 +1,27 @@
-# kindk8s-ueransim
+# Running UERANSIM in OCP
 
-config maps and deployments of 5G-NR emulated networks in k8s 
+Running UERANSIM 5G-NR emulator and connect to Open5Gs core in OCP 4.8.X 
 
 ## Rationale
 
-This repo leverages [ueransim](https://github.com/aligungr/UERANSIM) to deploy an emulated 5G gNB and a 5G UE implementing 3GPP Release 15 on k8s. In this particular case we use [kind](https://kind.sigs.k8s.io) to run a local K8S cluster using Docker containers as controller and worker nodes.
+This repo leverages [ueransim](https://github.com/aligungr/UERANSIM) to deploy an emulated 5G-SA gNB and a 5G-SA UE implementing 3GPP Release 15 and connect to Open5Gs core, all running on top of [OCP](https://github.com/openshift). We will have:
+
+	* 5G-SA UE running in a OCP pod
+	* 5G-SA gNB running in a OCP pod
+	* 5GC running in OCP pods
+
+Radio links connecting UE and gNB OCP pods are simulated over UDP protocol. More information regarding the implemented 3GPP features can be found [at UERANSIM Feature-Set](https://github.com/aligungr/UERANSIM/wiki/Feature-Set).
 
 ## Quickstart
 
-1. Generate open5gs and webui base image, as detailed [here](http://github.com/jnunyez/build-open5gs).
+1. Build the UERANSIM image. The repo to build this image is available in [here](https://github.com/jnunyez/build-ueransim). 
+	- Image are also publicly available:
+
+		```console
+    	podman pull quay.io/jnunez/ueransim
+		```
+
+2. Build open5gs and webui base image, as detailed [here](http://github.com/jnunyez/build-open5gs). 
 	
 	- Images are also publicly available, download them from:
 
@@ -17,14 +30,7 @@ This repo leverages [ueransim](https://github.com/aligungr/UERANSIM) to deploy a
     	podman pull quay.io/jnunez/webui
 		```
 
-2. Build the UERANSIM image. The repo to build this image is available in [here](https://github.com/jnunyez/build-ueransim). 
-	- Image is available now, download it from:
-
-		```console
-    	podman pull quay.io/jnunez/ueransim
-		```
-
-3. Deploy open5gs and prerequisites in k8s. The manifests and detailed instructions for deploying open5gs in k8s are available [here](https://github.com/jnunyez/kindk8s-open5gs). Assure that all open5gs pods are running properly.
+3. Deploy open5gs in OCP. The manifests along with detailed instructions for deploying open5gs in OCP are available [here](https://github.com/jnunyez/kindk8s-open5gs). Assure that all open5gs pods are running properly.
 
 4. Assure the 5G-Core has registered the subscriber profiles planned to be subsequently used with the 5G-NR simulator. 
 	
